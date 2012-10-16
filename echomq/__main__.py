@@ -11,7 +11,7 @@ from app import Application
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Message dispatcher')
+    parser = argparse.ArgumentParser(description='Generic echo server')
     parser.add_argument('--broker-url', type=str, required=True,
                         help='Broker to consume from')
     parser.add_argument('--exchange', type=str, required=True,
