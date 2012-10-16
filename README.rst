@@ -1,6 +1,3 @@
-echmq
------
-
 Generic echo server. Consumes messages from a broker and writes to socket.io, database, etc.
 
 Usage: ::
