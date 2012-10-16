@@ -10,6 +10,7 @@ class ClientConnection(tornadio.SocketConnection):
 
     def on_open(self, *args, **kwargs):
         self.clients.add(self)
+        self.send('Welcome!')
         logging.debug('Connected')
 
     def on_message(self, message):
