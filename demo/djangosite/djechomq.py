@@ -1,3 +1,8 @@
+# Sample application demonstrating echomq usage with django
+#
+# Run with PYTHONPATH=..:../.. DJANGO_SETTINGS_MODULE=djangosite.settings python djechomq.py --broker-url=amqp://localhost --port=8001 --queue=test
+#
+
 import os
 import logging
 import argparse
@@ -16,7 +21,7 @@ from echomq.app import Application
 
 class HelloHandler(tornado.web.RequestHandler):
   def get(self):
-    self.write('Hello friend!')
+    self.write('Hello from tornado!')
 
 
 def main():
@@ -38,7 +43,7 @@ def main():
 
     handlers = [ClientConnection.get_router().route()]
     handlers.extend([
-        ('/hello', HelloHandler),
+        ('/hello-tornado', HelloHandler),
         ('.*', tornado.web.FallbackHandler, dict(fallback=wsgi_app)),
     ])
 
@@ -56,6 +61,7 @@ def main():
     consumer.start()
 
     tornadio.server.SocketServer(app)
+
 
 if __name__ == "__main__":
     main()
