@@ -63,7 +63,7 @@ def main():
     consumer.start()
 
     logging.debug('Starting a socket server...')
-    tornadio.server.SocketServer(app)
+    tornadio.server.SocketServer(app, xheaders=True)
 
 
 if __name__ == "__main__":

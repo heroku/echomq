@@ -32,8 +32,8 @@ class ClientConnection(tornadio.SocketConnection):
     def get_router(cls):
         return tornadio.get_router(cls, {
                             'enabled_protocols': [
-                                #'websocket',
-                                #'xhr-multipart',
+                                'websocket',
+                                'xhr-multipart',
                                 'xhr-polling'
                             ]
                         })
