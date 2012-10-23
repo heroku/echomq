@@ -42,7 +42,7 @@ def main():
     wsgi_app = tornado.wsgi.WSGIContainer(
                     django.core.handlers.wsgi.WSGIHandler())
 
-    handlers = [ClientConnection.get_router().route()]
+    handlers = ClientConnection.get_router().urls
     handlers.extend([
         ('/hello-tornado', HelloHandler),
         ('.*', tornado.web.FallbackHandler, dict(fallback=wsgi_app)),
