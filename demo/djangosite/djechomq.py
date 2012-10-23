@@ -36,6 +36,7 @@ def main():
     parser.add_argument('--port', type=int, default=8001,
                         help='Web server port number')
 
+    logging.debug('Parsing the command line arguments...')
     args = parser.parse_args()
 
     wsgi_app = tornado.wsgi.WSGIContainer(
@@ -52,7 +53,7 @@ def main():
         app.io_loop.add_callback(partial(ClientConnection.broadcast,
                                          body, message))
         message.ack()
-    logging.debug('Starting a cunsumer thread...')
+    logging.debug('Starting a consumer thread...')
     consumer = ConsumerThread(broker_url=args.broker_url,
                               exchange='test',
                               exchange_type='direct',
