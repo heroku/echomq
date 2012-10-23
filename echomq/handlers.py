@@ -1,11 +1,11 @@
 import logging
 
-import tornadio
-import tornadio.router
-import tornadio.server
+import tornadio2
+import tornadio2.router
+import tornadio2.server
 
 
-class ClientConnection(tornadio.SocketConnection):
+class ClientConnection(tornadio2.SocketConnection):
     clients = set()
 
     def on_open(self, *args, **kwargs):
@@ -30,7 +30,7 @@ class ClientConnection(tornadio.SocketConnection):
 
     @classmethod
     def get_router(cls):
-        return tornadio.get_router(cls, {
+        return tornadio2.get_router(cls, {
                             'enabled_protocols': [
                                 'websocket',
                                 'xhr-multipart',

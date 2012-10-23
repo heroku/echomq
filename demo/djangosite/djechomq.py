@@ -11,7 +11,7 @@ from functools import partial
 
 import tornado
 import tornado.wsgi
-import tornadio
+import tornadio2
 import django.core.handlers.wsgi
 
 from echomq.consumer import ConsumerThread
@@ -63,7 +63,7 @@ def main():
     consumer.start()
 
     logging.debug('Starting a socket server...')
-    tornadio.server.SocketServer(app, xheaders=True)
+    tornadio2.server.SocketServer(app, xheaders=True)
 
 
 if __name__ == "__main__":

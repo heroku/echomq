@@ -3,7 +3,7 @@ import argparse
 
 from functools import partial
 
-import tornadio
+import tornadio2
 
 from consumer import ConsumerThread
 from handlers import ClientConnection
@@ -46,7 +46,7 @@ def main():
     consumer.add_callback(process_message)
     consumer.start()
 
-    tornadio.server.SocketServer(app)
+    tornadio2.server.SocketServer(app)
 
 
 if __name__ == "__main__":
