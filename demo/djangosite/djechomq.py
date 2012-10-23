@@ -52,6 +52,7 @@ def main():
         app.io_loop.add_callback(partial(ClientConnection.broadcast,
                                          body, message))
         message.ack()
+    logging.debug('Starting a cunsumer thread...')
     consumer = ConsumerThread(broker_url=args.broker_url,
                               exchange='test',
                               exchange_type='direct',
@@ -60,6 +61,7 @@ def main():
     consumer.add_callback(process_message)
     consumer.start()
 
+    logging.debug('Starting a socket server...')
     tornadio.server.SocketServer(app)
 
 
