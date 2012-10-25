@@ -26,13 +26,15 @@ def main():
                         help='Enable debugging')
     parser.add_argument('--socket-io-port', type=int, default=8001,
                         help='Socket.IO port number')
+    parser.add_argument('--ssl', type=bool, default=False,
+                        help='Use SSL to connect to the broker')
 
     args = parser.parse_args()
 
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
 
-    handlers = [ClientConnection.get_router().route()]
+    handlers = ClientConnection.get_router().urls
     app = Application(handlers, socket_io_port=args.socket_io_port)
     def process_message(body, message):
         app.io_loop.add_callback(partial(ClientConnection.broadcast,
@@ -42,7 +44,8 @@ def main():
                               exchange=args.exchange,
                               exchange_type=args.exchange_type,
                               queue=args.queue,
-                              routing_key=args.routing_key)
+                              routing_key=args.routing_key,
+                              ssl=args.ssl)
     consumer.add_callback(process_message)
     consumer.start()
 

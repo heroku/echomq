@@ -8,12 +8,13 @@ from kombu import Connection, Exchange, Queue
 class ConsumerThread(threading.Thread):
 
     def __init__(self, broker_url, exchange, exchange_type, queue,
-                       routing_key, durable=True):
+                       routing_key, durable=True, ssl=False):
         threading.Thread.__init__(self)
         self.daemon = True
 
         self._callbacks = []
         self._broker_url = broker_url
+        self._ssl = ssl
 
         self._exchange = Exchange(exchange, exchange_type, durable=durable)
         self._queue = Queue(queue, exchange=self._exchange, routing_key=routing_key)
@@ -26,7 +27,7 @@ class ConsumerThread(threading.Thread):
         self._callbacks.append(callback)
 
     def run(self):
-        with Connection(self._broker_url) as conn:
+        with Connection(self._broker_url, ssl=self._ssl) as conn:
             with conn.Consumer(self._queue, callbacks=self._callbacks):
                 logging.info('Connected to: %s' % conn.as_uri())
                 while True:
@@ -37,7 +38,7 @@ class TornadoConsumer(object):
     """Non-blocking, Tornado ioloop based consumer"""
 
     def __init__(self, broker_url, exchange, exchange_type, queue,
-                       routing_key, durable=True, io_loop=None):
+                       routing_key, durable=True, ssl=False, io_loop=None):
         self.io_loop = io_loop or ioloop.IoLoop.instance()
         self._conn = None
         self._callbacks = []
@@ -51,7 +52,7 @@ class TornadoConsumer(object):
         self._callbacks.append(callback)
 
     def start(self):
-        self._conn = Connection(self._broker_url)
+        self._conn = Connection(self._broker_url, ssl=False)
         self._consumer = self._conn.Consumer(self._queue, callbacks=self._callbacks)
         self.io_loop.add_handler(self._conn.fileno(), self._handle_event)
 
