@@ -35,6 +35,8 @@ def main():
                         help='Queue name')
     parser.add_argument('--port', type=int, default=8001,
                         help='Web server port number')
+    parser.add_argument('--ssl', type=bool, default=False,
+                        help='Use SSL')
 
     logging.debug('Parsing the command line arguments...')
     args = parser.parse_args()
@@ -58,7 +60,8 @@ def main():
                               exchange='test',
                               exchange_type='direct',
                               queue=args.queue,
-                              routing_key='')
+                              routing_key='',
+                              ssl=args.ssl)
     consumer.add_callback(process_message)
     consumer.start()
 

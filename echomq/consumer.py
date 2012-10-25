@@ -43,6 +43,7 @@ class TornadoConsumer(object):
         self._conn = None
         self._callbacks = []
         self._broker_url = broker_url
+        self._ssl = ssl
 
         self._exchange = Exchange(exchange, exchange_type, durable=durable)
         self._queue = Queue(queue, exchange=self._exchange, routing_key=routing_key)
@@ -52,7 +53,7 @@ class TornadoConsumer(object):
         self._callbacks.append(callback)
 
     def start(self):
-        self._conn = Connection(self._broker_url, ssl=False)
+        self._conn = Connection(self._broker_url, self._ssl)
         self._consumer = self._conn.Consumer(self._queue, callbacks=self._callbacks)
         self.io_loop.add_handler(self._conn.fileno(), self._handle_event)
 
