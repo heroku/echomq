@@ -8,6 +8,7 @@ import logging
 import argparse
 
 from functools import partial
+from signal import signal, SIGTERM
 
 import tornado
 import tornado.wsgi
@@ -63,10 +64,19 @@ def main():
                               routing_key='',
                               ssl=args.ssl)
     consumer.add_callback(process_message)
-    consumer.start()
 
-    logging.debug('Starting a socket server...')
-    tornadio2.server.SocketServer(app, xheaders=True)
+    try:
+        consumer.start()
+
+        def cleanup(*args):
+            raise KeyboardInterrupt
+        signal(SIGTERM, cleanup)
+
+        logging.debug('Starting a socket server...')
+        tornadio2.server.SocketServer(app, xheaders=True)
+    except KeyboardInterrupt:
+        consumer.stop()
+        consumer.join()
 
 
 if __name__ == "__main__":

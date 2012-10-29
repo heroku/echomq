@@ -2,6 +2,7 @@ import logging
 import argparse
 
 from functools import partial
+from signal import signal, SIGTERM
 
 import tornadio2
 
@@ -51,6 +52,12 @@ def main():
     consumer.add_callback(process_message)
     try:
         consumer.start()
+
+        # gracefully close connections
+        def cleanup(*args):
+            raise KeyboardInterrupt
+        signal(SIGTERM, cleanup)
+
         tornadio2.server.SocketServer(app)
     except KeyboardInterrupt:
         consumer.stop()
