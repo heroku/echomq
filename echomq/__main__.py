@@ -33,6 +33,8 @@ def main():
 
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
+    else:
+        logging.getLogger().setLevel(logging.INFO)
 
     handlers = ClientConnection.get_router().urls
     app = Application(handlers, socket_io_port=args.socket_io_port)
@@ -47,11 +49,14 @@ def main():
                               routing_key=args.routing_key,
                               ssl=args.ssl)
     consumer.add_callback(process_message)
-    consumer.start()
-
-    tornadio2.server.SocketServer(app)
+    try:
+        consumer.start()
+        tornadio2.server.SocketServer(app)
+    except KeyboardInterrupt:
+        consumer.stop()
+        logging.info('Stopping consumer. Please wait...')
+        consumer.join()
 
 
 if __name__ == "__main__":
-    logging.getLogger().setLevel(logging.DEBUG)
     main()
